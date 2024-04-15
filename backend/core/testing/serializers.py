@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from testing.models import Test, Question, Answer, CompletedTest
+from django.contrib.auth.models import User
 
 
 class AnswerSerializer(serializers.ModelSerializer):
@@ -34,3 +35,8 @@ class CompletedTestSerializer(serializers.ModelSerializer):
     class Meta:
         model = CompletedTest
         fields = ('user', 'test', 'score')
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'email')

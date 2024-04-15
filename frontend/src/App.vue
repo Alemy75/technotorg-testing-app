@@ -7,7 +7,7 @@ import { themes, themeNames } from "./themes";
 import { onMounted, ref, watch } from "vue";
 
 const router = useRouter();
-const theme = ref(themeNames.LIGHT);
+const theme = ref(themeNames.DARK);
 
 const onSignOut = () => {
     localStorage.removeItem("access_token");
@@ -18,7 +18,6 @@ const onSignOut = () => {
 };
 
 const toggleTheme = () => {
-    console.log(theme.value);
     if (theme.value == themeNames.LIGHT) {
         theme.value = themeNames.DARK;
     } else {

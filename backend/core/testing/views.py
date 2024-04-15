@@ -2,11 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.response import Response
 from testing.models import Test, CompletedTest
-from testing.serializers import TestListSerializer, TestSerializer, CompletedTestSerializer
+from testing.serializers import TestListSerializer, TestSerializer, CompletedTestSerializer, UserSerializer
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseForbidden
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
+from rest_framework.views import APIView
 
 
 class TestViewSet(viewsets.ReadOnlyModelViewSet):
@@ -60,3 +61,14 @@ class CompletedTestView(viewsets.ReadOnlyModelViewSet):
         test = get_object_or_404(Test, pk=pk)
         serializer = TestSerializer(test)
         return Response(serializer.data)
+
+class UserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
+
+
+
