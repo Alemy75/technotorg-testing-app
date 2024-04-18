@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { getTests } from "@/api/tests";
+import { getTests } from "@/entities/tests";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUser } from "@/entities/user";
 
-import tCard from "@/components/layouts/t-card";
-import tGrid from "@/components/layouts/t-grid/t-grid.vue";
-import tTest from "@/components/icons/t-test.vue";
+import tCard from "@/shared/ui/layouts/t-card";
+import tGrid from "@/shared/ui/layouts/t-grid";
+import tTest from "@/shared/ui/icons/t-test.vue";
 
 const { user } = useUser();
 const router = useRouter();
@@ -15,6 +15,8 @@ const tests = ref<Test[]>([]);
 
 const uploadTests = async () => {
   isLoading.value = true;
+
+  console.log(1);
 
   try {
     const { data } = await getTests();
@@ -26,11 +28,17 @@ const uploadTests = async () => {
   }
 };
 
-const onTest = (id: number) => {
+const onTest = (test: Test) => {
+  if (test.completed) {
+    alert("Нельзя пройти пройденный тест");
+
+    return;
+  }
+
   router.push({
     name: "test",
     params: {
-      testId: id
+      testId: test.id
     }
   });
 };
@@ -42,6 +50,7 @@ onMounted(async () => {
 interface Test {
   id: number;
   name: string;
+  completed: boolean;
 }
 </script>
 
@@ -49,26 +58,56 @@ interface Test {
   <main class="mt-16">
     <div>
       <h1>Тесты</h1>
-      <p v-if="user">Привет, {{ user.username }}!</p>
     </div>
-    <p>Список достуных тестов</p>
-    <t-grid class="list">
-      <t-card
-        v-for="test in tests"
-        :key="test.id"
-        class="test"
-        :class="{ completed: test.id === 24 }"
-        @click="onTest(test.id)"
-      >
-        <div class="title">
-          <t-test />
-          <h3>{{ test.name }}</h3>
-        </div>
-        <div class="status mt-2">
-          Статус: {{ test.id === 24 ? "Пройден" : "Не пройден" }}
-        </div>
-      </t-card>
-    </t-grid>
+    <p>
+      <span v-if="user">Привет, {{ user.username }}!</span> На данной странице
+      ты можешь выбрать тест для прохождения. Пройденый тест нельзя пройти
+      повторно.
+    </p>
+
+    <div class="mb-8">
+      <h3 class="mb-2">Не пройденые</h3>
+
+      <t-grid class="list">
+        <t-card
+          v-for="test in tests.filter(test => !test.completed)"
+          :key="test.id"
+          class="test"
+          :class="{ completed: test.completed }"
+          @click="onTest(test)"
+        >
+          <div class="title">
+            <t-test />
+            <h3>{{ test.name }}</h3>
+          </div>
+          <div class="status mt-2">
+            Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
+          </div>
+        </t-card>
+      </t-grid>
+    </div>
+
+    <div class="mb-16">
+      <h3 class="mb-2">Пройденые</h3>
+
+      <t-grid class="list">
+        <t-card
+          v-for="test in tests.filter(test => test.completed)"
+          :key="test.id"
+          class="test"
+          :class="{ completed: test.completed }"
+          @click="onTest(test)"
+        >
+          <div class="title">
+            <t-test />
+            <h3>{{ test.name }}</h3>
+          </div>
+          <div class="status mt-2">
+            Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
+          </div>
+        </t-card>
+      </t-grid>
+    </div>
   </main>
 </template>
 
@@ -107,6 +146,10 @@ interface Test {
   outline: 1px solid var(--t-success);
   svg {
     color: var(--t-success) !important;
+  }
+
+  &:hover {
+    outline: 1px solid var(--t-success);
   }
 }
 </style>

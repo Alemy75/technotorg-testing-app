@@ -8,14 +8,12 @@ class AnswerSerializer(serializers.ModelSerializer):
         model = Answer
         fields = ['id', 'text', 'is_correct']
 
-
 class QuestionSerializer(serializers.ModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Question
-        fields = ['id', 'text', 'answers']
-
+        fields = ['id', 'text', 'answers', 'image']
 
 class TestSerializer(serializers.ModelSerializer):
     questions = QuestionSerializer(many=True, read_only=True)
@@ -24,19 +22,20 @@ class TestSerializer(serializers.ModelSerializer):
         model = Test
         fields = ['id', 'name', 'questions']
 
-
 class TestListSerializer(serializers.ModelSerializer):
+    
+    completed = serializers.BooleanField()
+    
     class Meta:
         model = Test
-        fields = ('id', 'name')
-
-
-class CompletedTestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CompletedTest
-        fields = ('user', 'test', 'score')
+        fields = ('id', 'name', 'completed')
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'username', 'email')
+
+class CompletedTestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompletedTest
+        fields = ['id', 'user', 'test', 'score', 'completed_at']

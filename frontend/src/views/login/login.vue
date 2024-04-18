@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import tCard from "@/components/layouts/t-card";
-import tButton from "@/components/atoms/t-button";
-import tLogo from "@/components/icons/t-logo.vue";
+import tCard from "@/shared/ui/layouts/t-card";
+import tButton from "@/shared/ui/atoms/t-button";
+import tLogo from "@/shared/ui/icons/t-logo.vue";
 
 import { useToken } from "@/features/auth";
 import { ref } from "vue";
