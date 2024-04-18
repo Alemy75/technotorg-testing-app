@@ -8,6 +8,7 @@ urlpatterns = [
     path('tests/<int:pk>/', views.TestViewSet.as_view({'get': 'retrieve'})),
     path('tests/<int:pk>/complete/', views.CompleteTestView.as_view()),
     path('user/', views.UserView.as_view()),
+    path('tests/export/', views.CompletedTestsDOCXView.as_view()),
 ]
 
 if settings.DEBUG:

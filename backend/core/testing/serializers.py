@@ -31,9 +31,14 @@ class TestListSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'completed')
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(source='get_full_name', read_only=True)
+    
+    roles = serializers.StringRelatedField(source='groups', many=True)
+    
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ['id', 'username', 'full_name', 'roles']
+
 
 class CompletedTestSerializer(serializers.ModelSerializer):
     class Meta:

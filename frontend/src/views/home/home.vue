@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getTests } from "@/entities/tests";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useUser } from "@/entities/user";
 
@@ -15,8 +15,6 @@ const tests = ref<Test[]>([]);
 
 const uploadTests = async () => {
   isLoading.value = true;
-
-  console.log(1);
 
   try {
     const { data } = await getTests();
@@ -60,12 +58,12 @@ interface Test {
       <h1>Тесты</h1>
     </div>
     <p>
-      <span v-if="user">Привет, {{ user.username }}!</span> На данной странице
+      <span v-if="user">Привет, {{ user.full_name }}!</span> На данной странице
       ты можешь выбрать тест для прохождения. Пройденый тест нельзя пройти
       повторно.
     </p>
 
-    <div class="mb-8">
+    <div v-if="tests.filter(test => !test.completed).length" class="mb-8">
       <h3 class="mb-2">Не пройденые</h3>
 
       <t-grid class="list">
@@ -87,7 +85,7 @@ interface Test {
       </t-grid>
     </div>
 
-    <div class="mb-16">
+    <div v-if="tests.filter(test => test.completed).length" class="mb-16">
       <h3 class="mb-2">Пройденые</h3>
 
       <t-grid class="list">

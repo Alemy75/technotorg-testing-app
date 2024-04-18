@@ -4,12 +4,21 @@ import tLogout from "./shared/ui/icons/t-logout.vue";
 import tDoc from "./shared/ui/icons/t-doc.vue";
 import tColor from "./shared/ui/icons/t-color.vue";
 
+import { exportDocx } from "./features/export-docx";
+import { ROLES } from "@/shared/constants/roles";
+import { useUser } from "@/entities/user";
 import { useRouter } from "vue-router";
 import { themes, themeNames } from "./themes";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch, computed } from "vue";
+import { useObjectUrl } from "@vueuse/core";
 
 const router = useRouter();
 const theme = ref(themeNames.DARK);
+const { user } = useUser();
+const isDocVisible = computed(() => user.value?.roles.includes(ROLES.ADMIN));
+
+const file = ref(null);
+const url = useObjectUrl(file);
 
 const onSignOut = () => {
   localStorage.removeItem("access_token");
@@ -18,6 +27,21 @@ const onSignOut = () => {
   router.push({
     name: "login"
   });
+};
+
+const onExportDocx = async () => {
+  const { data } = await exportDocx();
+
+  const url = window.URL.createObjectURL(new Blob([data]));
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute(
+    "download",
+    `Отчет_за_${new Date().toLocaleDateString()}.docx`
+  ); // указываем имя файла для скачивания
+  document.body.appendChild(link);
+  link.click();
+  link.parentNode?.removeChild(link);
 };
 
 const toggleTheme = () => {
@@ -45,10 +69,10 @@ onMounted(() => {
   <div class="nav">
     <t-container class="nav-container">
       <div class="wrap">
-        <button class="btn" @click="onSignOut">
+        <button v-if="user" class="btn" @click="onSignOut">
           <t-logout />
         </button>
-        <button class="btn" @click="onSignOut">
+        <button v-if="user && isDocVisible" class="btn" @click="onExportDocx">
           <t-doc />
         </button>
         <button class="btn" @click="toggleTheme">

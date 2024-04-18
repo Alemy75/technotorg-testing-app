@@ -119,7 +119,7 @@ const onAnswer = () => {
 
       await completeTest({
         testId: testId.value,
-        score: score.value
+        score: Math.floor((score.value / test.value.questions.length) * 100)
       });
     }
 

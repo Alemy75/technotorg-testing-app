@@ -9,6 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import permission_classes
 from rest_framework.views import APIView
 from django.db.models import Exists, OuterRef
+import csv
+import docx
+from django.http import HttpResponse
 
 
 
@@ -59,8 +62,47 @@ class UserView(APIView):
 
     def get(self, request):
         user = request.user
+        
+        roles = user.groups.all()
+        user.full_name = user.get_full_name()
+        
         serializer = UserSerializer(user)
+        
         return Response(serializer.data)
+    
+class CompletedTestsDOCXView(View):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        # получаем данные
+        tests = CompletedTest.objects.all() 
 
+        # создаем документ
+        doc = docx.Document()
+
+        # добавляем заголовок
+        doc.add_heading('Отчет по пройденным тестам', 0)
+
+        # добавляем таблицу
+        table = doc.add_table(rows=1, cols=4)
+        hdr_cells = table.rows[0].cells
+        hdr_cells[0].text = 'Пользователь'
+        hdr_cells[1].text = 'Тест'
+        hdr_cells[2].text = 'Результат'
+        hdr_cells[3].text = 'Дата'
+
+        # заполняем строки таблицы данными 
+        for test in tests:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(test.user.get_full_name())
+            row_cells[1].text = str(test.test)
+            row_cells[2].text = str(test.score) + "%" 
+            row_cells[3].text = str(test.completed_at)
+
+        # сохраняем документ и возвращаем его
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = 'attachment; filename=report.docx'
+        doc.save(response)
+
+        return response
 
