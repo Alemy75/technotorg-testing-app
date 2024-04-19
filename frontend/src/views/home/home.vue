@@ -3,6 +3,7 @@ import { getTests } from "@/entities/tests";
 import { onMounted, ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useUser } from "@/entities/user";
+import { useSnackbar } from "@/shared/snackbar";
 
 import tCard from "@/shared/ui/layouts/t-card";
 import tGrid from "@/shared/ui/layouts/t-grid";
@@ -12,6 +13,7 @@ const { user } = useUser();
 const router = useRouter();
 const isLoading = ref(false);
 const tests = ref<Test[]>([]);
+const snackbar = useSnackbar()
 
 const uploadTests = async () => {
   isLoading.value = true;
@@ -28,7 +30,11 @@ const uploadTests = async () => {
 
 const onTest = (test: Test) => {
   if (test.completed) {
-    alert("Нельзя пройти пройденный тест");
+    snackbar.show({
+      type: "danger",
+      message: "Тест уже пройден",
+      timeout: 2000
+    })
 
     return;
   }

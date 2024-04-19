@@ -6,7 +6,9 @@ import tLogo from "@/shared/ui/icons/t-logo.vue";
 import { useToken } from "@/features/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { useSnackbar } from "@/shared/snackbar";
 
+const snackbar = useSnackbar();
 const router = useRouter();
 
 const isLoading = ref(false);
@@ -24,7 +26,12 @@ const onSubmit = async () => {
     router.push({
       name: "home"
     });
-  } catch {
+  } catch (e) {
+    snackbar.show({
+      type: "danger",
+      message: "Ошибка авторизации",
+      timeout: 2000
+    });
   } finally {
     isLoading.value = false;
   }
