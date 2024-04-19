@@ -12,17 +12,13 @@ import { useUser } from "@/entities/user";
 import { useRouter } from "vue-router";
 import { themes, themeNames } from "./themes";
 import { onMounted, ref, watch, computed } from "vue";
-import { useObjectUrl } from "@vueuse/core";
 import { useSnackbar } from "./shared/snackbar";
 
 const snackbar = useSnackbar();
 const router = useRouter();
-const theme = ref(themeNames.DARK);
+const theme = ref(themeNames.LIGHT);
 const { user } = useUser();
 const isDocVisible = computed(() => user.value?.roles.includes(ROLES.ADMIN));
-
-const file = ref(null);
-const url = useObjectUrl(file);
 
 const onSignOut = () => {
   localStorage.removeItem("access_token");
