@@ -186,14 +186,16 @@ onMounted(() => {
           >
         </div>
       </div>
-      <div v-else>
-        <h3>Тест завершён</h3>
+      <div v-else class="results">
+        <h3>Тест успешно пройден!</h3>
 
-        <p class="answer">
-          Ваш результат:
-          <span style="font-size: 2.5rem"> {{ score }}</span> |
-          {{ test.questions.length }}
-        </p>
+        <p class="answer">Ваш результат:</p>
+
+        <div class="mb-6">
+          <span style="font-size: 5.5rem; color: var(--t-primary)">
+            {{ Math.floor((score / test.questions.length) * 100) }}%
+          </span>
+        </div>
 
         <t-button @click="onSubmit">На главную</t-button>
       </div>
@@ -287,5 +289,9 @@ onMounted(() => {
       }
     }
   }
+}
+
+.results {
+  text-align: center;
 }
 </style>

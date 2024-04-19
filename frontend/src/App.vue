@@ -17,12 +17,14 @@ import { useSnackbar } from "./shared/snackbar";
 const snackbar = useSnackbar();
 const router = useRouter();
 const theme = ref(themeNames.LIGHT);
-const { user } = useUser();
+const { user, reset } = useUser();
 const isDocVisible = computed(() => user.value?.roles.includes(ROLES.ADMIN));
 
 const onSignOut = () => {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
+
+  reset();
 
   router.push({
     name: "login"

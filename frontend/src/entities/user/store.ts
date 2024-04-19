@@ -19,5 +19,9 @@ export const useUser = createGlobalState(() => {
     }
   };
 
-  return { user, setUser };
+  const reset = () => {
+    user.value = null;
+  };
+
+  return { user, setUser, reset };
 });
