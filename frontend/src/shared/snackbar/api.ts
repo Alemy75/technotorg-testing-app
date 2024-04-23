@@ -6,12 +6,16 @@ export const useSnackbar = createGlobalState(() => {
   const message = ref("");
   const type = ref<Type>("success");
 
+  let tm: NodeJS.Timeout;
+
   const show = (options: Options) => {
+    clearTimeout(tm);
+
     isVisible.value = true;
     message.value = options.message;
     type.value = options.type;
 
-    setTimeout(() => hide(), options.timeout);
+    tm = setTimeout(() => hide(), options.timeout);
   };
 
   const hide = () => {

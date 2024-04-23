@@ -21,7 +21,7 @@ const classList = computed(() => ({
   border-radius: 10px;
   background-color: var(--t-surface);
   position: fixed;
-  bottom: 4rem;
+  bottom: 2rem;
   right: 2rem;
   width: 200px;
   transition: all 0.3s ease-in-out;
