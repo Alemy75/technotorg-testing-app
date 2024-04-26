@@ -57,6 +57,7 @@ const getUserMiddleware = async (
   _: RouteLocationNormalized,
   next: NavigationGuardNext
 ) => {
+  console.log(to.meta.auth);
   await setUser();
   next();
 };

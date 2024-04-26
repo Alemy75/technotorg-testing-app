@@ -1,7 +1,6 @@
 import axios, { type AxiosRequestConfig } from "axios";
-import { access } from "fs";
 
-axios.defaults.baseURL = "http://localhost:8000/";
+axios.defaults.baseURL = "http://37.9.7.152:8000/";
 
 export const request = async <T = any, D = any>({
   url = "/",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getTests } from "@/entities/tests";
-import { onMounted, ref, computed } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUser } from "@/entities/user";
 import { useSnackbar } from "@/shared/snackbar";
@@ -13,7 +13,7 @@ const { user } = useUser();
 const router = useRouter();
 const isLoading = ref(false);
 const tests = ref<Test[]>([]);
-const snackbar = useSnackbar()
+const snackbar = useSnackbar();
 
 const uploadTests = async () => {
   isLoading.value = true;
@@ -34,7 +34,7 @@ const onTest = (test: Test) => {
       type: "danger",
       message: "Тест уже пройден",
       timeout: 2000
-    })
+    });
 
     return;
   }
