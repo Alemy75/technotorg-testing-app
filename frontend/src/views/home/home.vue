@@ -8,6 +8,7 @@ import { useSnackbar } from "@/shared/snackbar";
 import tCard from "@/shared/ui/layouts/t-card";
 import tGrid from "@/shared/ui/layouts/t-grid";
 import tTest from "@/shared/ui/icons/t-test.vue";
+import tPreloader from "@/shared/ui/prelaoder";
 
 const { user } = useUser();
 const router = useRouter();
@@ -64,54 +65,62 @@ interface Test {
       <h1>Тесты</h1>
     </div>
     <p>
-      <span v-if="user">Привет, {{ user.full_name }}!</span> На данной странице
-      ты можешь выбрать тест для прохождения. Пройденый тест нельзя пройти
-      повторно.
+      <span v-if="user && user.full_name">Привет, {{ user.full_name }}!</span>
+      На данной странице ты можешь выбрать тест для прохождения. Пройденый тест
+      нельзя пройти повторно.
     </p>
 
-    <div v-if="tests.filter(test => !test.completed).length" class="mb-8">
-      <h3 class="mb-2">Не пройденые</h3>
-
-      <t-grid class="list">
-        <t-card
-          v-for="test in tests.filter(test => !test.completed)"
-          :key="test.id"
-          class="test"
-          :class="{ completed: test.completed }"
-          @click="onTest(test)"
-        >
-          <div class="title">
-            <t-test />
-            <h3>{{ test.name }}</h3>
-          </div>
-          <div class="status mt-2">
-            Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
-          </div>
-        </t-card>
-      </t-grid>
+    <div v-if="isLoading" class="preloader">
+      <t-preloader />
     </div>
 
-    <div v-if="tests.filter(test => test.completed).length" class="mb-16">
-      <h3 class="mb-2">Пройденые</h3>
+    <div v-else-if="tests.length">
+      <div v-if="tests.filter(test => !test.completed).length" class="mb-8">
+        <h3 class="mb-2">Не пройденые</h3>
 
-      <t-grid class="list">
-        <t-card
-          v-for="test in tests.filter(test => test.completed)"
-          :key="test.id"
-          class="test"
-          :class="{ completed: test.completed }"
-          @click="onTest(test)"
-        >
-          <div class="title">
-            <t-test />
-            <h3>{{ test.name }}</h3>
-          </div>
-          <div class="status mt-2">
-            Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
-          </div>
-        </t-card>
-      </t-grid>
+        <t-grid class="list">
+          <t-card
+            v-for="test in tests.filter(test => !test.completed)"
+            :key="test.id"
+            class="test"
+            :class="{ completed: test.completed }"
+            @click="onTest(test)"
+          >
+            <div class="title">
+              <t-test />
+              <h3>{{ test.name }}</h3>
+            </div>
+            <div class="status mt-2">
+              Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
+            </div>
+          </t-card>
+        </t-grid>
+      </div>
+
+      <div v-if="tests.filter(test => test.completed).length" class="mb-16">
+        <h3 class="mb-2">Пройденые</h3>
+
+        <t-grid class="list">
+          <t-card
+            v-for="test in tests.filter(test => test.completed)"
+            :key="test.id"
+            class="test"
+            :class="{ completed: test.completed }"
+            @click="onTest(test)"
+          >
+            <div class="title">
+              <t-test />
+              <h3>{{ test.name }}</h3>
+            </div>
+            <div class="status mt-2">
+              Статус: {{ test.completed ? "Пройден" : "Не пройден" }}
+            </div>
+          </t-card>
+        </t-grid>
+      </div>
     </div>
+
+    <div v-else class="nothing">На данный момент тесты отсутствуют</div>
   </main>
 </template>
 
@@ -155,5 +164,14 @@ interface Test {
   &:hover {
     outline: 1px solid var(--t-success);
   }
+}
+
+.preloader {
+  text-align: center;
+}
+
+.nothing {
+  opacity: 0.5;
+  color: var(--t-primary);
 }
 </style>
