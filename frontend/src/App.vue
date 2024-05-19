@@ -5,8 +5,8 @@ import tDoc from "./shared/ui/icons/t-doc.vue";
 import tColor from "./shared/ui/icons/t-color.vue";
 import tFullLogo from "./shared/ui/icons/t-full-logo.vue";
 import tSnackbar from "./shared/snackbar";
+import tModal from "./shared/ui/layouts/t-modal";
 
-import { exportDocx } from "./features/export-docx";
 import { ROLES } from "@/shared/constants/roles";
 import { useUser } from "@/entities/user";
 import { useRouter } from "vue-router";
@@ -19,6 +19,7 @@ const router = useRouter();
 const theme = ref(themeNames.LIGHT);
 const { user, reset } = useUser();
 const isDocVisible = computed(() => user.value?.roles.includes(ROLES.ADMIN));
+const isModalVisible = ref(false);
 
 const onSignOut = () => {
   localStorage.removeItem("access_token");
@@ -29,35 +30,6 @@ const onSignOut = () => {
   router.push({
     name: "login"
   });
-};
-
-const onExportDocx = async () => {
-  try {
-    const { data } = await exportDocx();
-
-    const url = window.URL.createObjectURL(new Blob([data]));
-    const link = document.createElement("a");
-    link.href = url;
-    link.setAttribute(
-      "download",
-      `Отчет_за_${new Date().toLocaleDateString()}.docx`
-    ); // указываем имя файла для скачивания
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode?.removeChild(link);
-
-    snackbar.show({
-      type: "success",
-      message: "Отчет сформирован успешно!",
-      timeout: 2000
-    });
-  } catch {
-    snackbar.show({
-      type: "danger",
-      message: "Ошибка формирования отчета! Повторите попытку позже.",
-      timeout: 2000
-    });
-  }
 };
 
 const toggleTheme = () => {
@@ -94,7 +66,11 @@ onMounted(() => {
         <button v-if="user" class="btn" @click="onSignOut">
           <t-logout />
         </button>
-        <button v-if="user && isDocVisible" class="btn" @click="onExportDocx">
+        <button
+          v-if="user && isDocVisible"
+          class="btn"
+          @click="isModalVisible = true"
+        >
           <t-doc />
         </button>
         <button class="btn" @click="toggleTheme">
@@ -113,6 +89,8 @@ onMounted(() => {
   </t-container>
 
   <t-snackbar />
+
+  <t-modal :isVisible="isModalVisible" @close="isModalVisible = false" />
 </template>
 
 <style lang="scss" scoped>

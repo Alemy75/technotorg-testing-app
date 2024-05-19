@@ -41,9 +41,9 @@ const isSingle = computed(() => {
 
 const questionVariant = computed(() => {
   if (isSingle.value) {
-    return "Выберете 1 вариант ответа";
+    return "Один вариант ответа";
   } else {
-    return "Выберете несколько варианта ответа";
+    return "Несколько варианта ответа";
   }
 });
 
@@ -124,7 +124,7 @@ const onAnswer = () => {
     }
 
     clearQuestionInfo();
-  }, 1000);
+  }, 5000);
 };
 
 const onSubmit = () => {
@@ -181,9 +181,11 @@ onMounted(() => {
             </div>
           </div>
 
-          <t-button :disabled="!selectedAnswers.length" @click="onAnswer"
-            >Принять</t-button
-          >
+          <div class="b-btn">
+            <t-button :disabled="!selectedAnswers.length" @click="onAnswer">
+              Далее
+            </t-button>
+          </div>
         </div>
       </div>
       <div v-else class="results">
@@ -288,6 +290,10 @@ onMounted(() => {
         border: 1px solid var(--t-danger);
       }
     }
+  }
+
+  .b-btn {
+    text-align: right;
   }
 }
 

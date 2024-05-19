@@ -1,6 +1,8 @@
 import axios, { type AxiosRequestConfig } from "axios";
 
-axios.defaults.baseURL = "http://37.9.7.152:8000/";
+axios.defaults.baseURL = import.meta.env.VITE_API_PROXY_TARGET;
+axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
+axios.defaults.xsrfCookieName = "csrftoken";
 
 export const request = async <T = any, D = any>({
   url = "/",

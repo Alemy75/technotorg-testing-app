@@ -17,6 +17,8 @@ const classList = computed(() => ({
 
 <style lang="scss" scoped>
 .snackbar {
+  text-align: center;
+  z-index: 10000;
   padding: 1rem;
   border-radius: 10px;
   background-color: var(--t-surface);

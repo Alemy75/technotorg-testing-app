@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.response import Response
@@ -91,21 +92,25 @@ class UserView(APIView):
 class CompletedTestsDOCXView(View):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def post(self, request):
         # получаем данные
-        tests = CompletedTest.objects.order_by(F('score').desc())
+        data = json.loads(request.body)
+        test_ids = data.get('tests')
+
+        tests = CompletedTest.objects.filter(
+            test__in=test_ids).order_by(F('score').desc())
 
         # создаем документ
         doc = docx.Document()
 
         # добавляем заголовок
-        doc.add_heading('Отчет по пройденным тестам', 0)
+        doc.add_heading('Отчет по пройденым тестам', 0)
 
         # добавляем таблицу
         table = doc.add_table(rows=1, cols=4)
         hdr_cells = table.rows[0].cells
         hdr_cells[0].text = 'Пользователь'
-        hdr_cells[1].text = 'Тест'
+        hdr_cells[1].text = 'Название теста'
         hdr_cells[2].text = 'Результат'
         hdr_cells[3].text = 'Дата'
 

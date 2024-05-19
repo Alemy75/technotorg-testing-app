@@ -76,7 +76,7 @@ interface Test {
 
     <div v-else-if="tests.length">
       <div v-if="tests.filter(test => !test.completed).length" class="mb-8">
-        <h3 class="mb-2">Не пройденые</h3>
+        <h3 class="mb-2">Предстоит пройти</h3>
 
         <t-grid class="list">
           <t-card
