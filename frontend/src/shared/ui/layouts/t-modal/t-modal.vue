@@ -127,6 +127,10 @@ watch(isVisible, value => {
   setTimeout(() => {
     show.value = value;
   }, 1);
+
+  if (value) {
+    checkedTests.value = [];
+  }
 });
 
 interface Test {
