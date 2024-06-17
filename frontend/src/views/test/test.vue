@@ -91,10 +91,14 @@ const correctAnswers = computed(() => {
 const isCorrect = computed(() => {
   if (!currentQuestion.value) return false;
 
-  return currentQuestion.value.answers
-    .filter(answer => answer.is_correct)
-    .map(answer => answer.id)
-    .every(idx => selectedAnswers.value.includes(idx));
+  return (
+    currentQuestion.value.answers
+      .filter(answer => answer.is_correct)
+      .map(answer => answer.id)
+      .every(idx => selectedAnswers.value.includes(idx)) &&
+    currentQuestion.value.answers.filter(answer => answer.is_correct).length &&
+    selectedAnswers.value.length
+  );
 });
 
 const clearQuestionInfo = () => {
@@ -182,7 +186,10 @@ onMounted(() => {
           </div>
 
           <div class="b-btn">
-            <t-button :disabled="!selectedAnswers.length" @click="onAnswer">
+            <t-button
+              :disabled="!selectedAnswers.length || showAnswer"
+              @click="onAnswer"
+            >
               Далее
             </t-button>
           </div>

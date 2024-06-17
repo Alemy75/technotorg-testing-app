@@ -94,8 +94,6 @@ const onCheck = (event: Event) => {
   } else {
     checkedTests.value = checkedTests.value.filter(el => el !== +checkbox.id);
   }
-
-  console.log(toRaw(checkedTests.value));
 };
 
 const uploadTests = async () => {
